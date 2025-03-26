@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Signup</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .signup-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            padding: 30px;
+        }
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        h1 {
+            color: #3498db;
+            font-size: 24px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        .success-message {
+            color: #2ecc71;
+            font-size: 14px;
+            margin-top: 15px;
+            display: none;
+        }
+        .login-link {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+        }
+        .login-link a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <img src="https://via.placeholder.com/80" alt="School Logo" class="logo">
+        <h1>Student Registration</h1>
+        
+        <form id="studentSignupForm">
+            <div class="form-group">
+                <label for="studentId">Student ID</label>
+                <input type="text" id="studentId" placeholder="Enter your student ID" required>
+                <div id="idError" class="error-message">Please enter student ID</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Create password" required>
+                <div id="passwordError" class="error-message">Password must be at least 6 characters</div>
+            </div>
+            
+            <button type="submit">Register</button>
+            <div id="successMessage" class="success-message"></div>
+        </form>
+        
+        <div class="login-link">
+            Already registered? <a href="student_login.html">Login here</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('studentSignupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const studentId = document.getElementById('studentId').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            // Reset errors
+            document.getElementById('idError').style.display = 'none';
+            document.getElementById('passwordError').style.display = 'none';
+            
+            // Validate
+            let isValid = true;
+            
+            if (!studentId) {
+                document.getElementById('idError').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!password || password.length < 6) {
+                document.getElementById('passwordError').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (isValid) {
+                // Save student data
+                const student = { id: studentId, password: password };
+                localStorage.setItem('students', JSON.stringify([student]));
+                
+                // Show success and redirect
+                document.getElementById('successMessage').textContent = 'Registration successful! Redirecting...';
+                document.getElementById('successMessage').style.display = 'block';
+                
+                setTimeout(() => {
+                    window.location.href = 'student_login.html';
+                }, 1500);
+            }
+        });
+    </script>
+</body>
+</html>

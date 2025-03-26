@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: url('logo.jpg') center/cover no-repeat;
+            color: white;
+            font-weight: bold;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            height: 500px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            color: black;
+            font-size: 45px;
+            position: absolute;
+            top: 45%; /* Adjusted this value to move it slightly down */
+            transform: translateY(-50%);
+        }
+
+        .buttons {
+            position: absolute;
+            bottom: 50px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn {
+            width: 85%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .student-btn {
+            background-color: #3498db;
+            color: white;
+        }
+        .student-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .teacher-btn {
+            background-color: #e67e22;
+            color: white;
+        }
+        .teacher-btn:hover {
+            background-color: #d35400;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TrueCheck</h1>
+        <div class="buttons">
+            <button class="btn student-btn" id="studentBtn">I'm a Student</button>
+            <button class="btn teacher-btn" id="teacherBtn">I'm a Teacher</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('studentBtn').addEventListener('click', function() {
+            const students = JSON.parse(localStorage.getItem('students')) || [];
+            const isRegistered = students.length > 0;
+            window.location.href = isRegistered ? 'student_login.html' : 'student_signup.html';
+        });
+
+        document.getElementById('teacherBtn').addEventListener('click', function() {
+            window.location.href = 'teacher_login.html';
+        });
+    </script>
+</body>
+</html>
