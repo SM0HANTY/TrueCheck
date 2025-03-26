@@ -135,11 +135,24 @@
             // Reset errors
             document.getElementById('idError').style.display = 'none';
             document.getElementById('passwordError').style.display = 'none';
-            
-            // Validate
+            document.getElementById('successMessage').style.display = 'none';
+
             let isValid = true;
-            
+
+            // Retrieve stored students from localStorage
+            const students = JSON.parse(localStorage.getItem('students')) || [];
+
+            // Check if the student is already registered
+            const existingStudent = students.find(s => s.id === studentId);
+            if (existingStudent) {
+                document.getElementById('idError').textContent = "This Student ID is already registered.";
+                document.getElementById('idError').style.display = 'block';
+                return;
+            }
+
+            // Validation
             if (!studentId) {
+                document.getElementById('idError').textContent = "Please enter student ID";
                 document.getElementById('idError').style.display = 'block';
                 isValid = false;
             }
@@ -148,13 +161,13 @@
                 document.getElementById('passwordError').style.display = 'block';
                 isValid = false;
             }
-            
+
             if (isValid) {
-                // Save student data
-                const student = { id: studentId, password: password };
-                localStorage.setItem('students', JSON.stringify([student]));
-                
-                // Show success and redirect
+                // Save new student data
+                students.push({ id: studentId, password: password });
+                localStorage.setItem('students', JSON.stringify(students));
+
+                // Show success message and redirect
                 document.getElementById('successMessage').textContent = 'Registration successful! Redirecting...';
                 document.getElementById('successMessage').style.display = 'block';
                 
