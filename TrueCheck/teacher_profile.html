@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Profile</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .profile-container {
+            background: white;
+            color: #333;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            padding: 30px;
+            text-align: center;
+        }
+        h1 {
+            color: #e67e22;
+        }
+        select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        button {
+            background-color: #e67e22;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #d35400;
+        }
+        #otpDisplay {
+            font-size: 20px;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="profile-container">
+        <h1>Teacher Profile</h1>
+
+        <label for="yearSelect">Select Year:</label>
+        <select id="yearSelect" onchange="updateSections()">
+            <option value="">--Select Year--</option>
+            <option value="1st Year">1st Year</option>
+            <option value="2nd Year">2nd Year</option>
+            <option value="3rd Year">3rd Year</option>
+            <option value="4th Year">4th Year</option>
+        </select>
+
+        <label for="sectionSelect">Select Section:</label>
+        <select id="sectionSelect">
+            <option value="">--Select Section--</option>
+        </select>
+
+        <button onclick="generateOTP()">Generate OTP</button>
+        <div id="otpDisplay"></div>
+
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <script>
+        // ✅ Redirect to login if unauthorized
+        if (localStorage.getItem('teacherLoggedIn') !== 'true') {
+            window.location.href = 'teacher_login.html';
+        }
+
+        // ✅ Sections Data
+        const sectionsData = {
+            "1st Year": ["Section 1", "Section 2", "Section 3", "Section 4"],
+            "2nd Year": ["Section A", "Section B", "Section C"],
+            "3rd Year": ["Alpha", "Beta", "Gamma"],
+            "4th Year": ["X", "Y", "Z"]
+        };
+
+        // ✅ Update Sections Dropdown
+        function updateSections() {
+            const year = document.getElementById('yearSelect').value;
+            const sectionSelect = document.getElementById('sectionSelect');
+            sectionSelect.innerHTML = '<option value="">--Select Section--</option>';
+
+            if (year && sectionsData[year]) {
+                sectionsData[year].forEach(section => {
+                    let option = document.createElement('option');
+                    option.value = section;
+                    option.textContent = section;
+                    sectionSelect.appendChild(option);
+                });
+            }
+        }
+
+        // ✅ Generate OTP
+        function generateOTP() {
+            const year = document.getElementById('yearSelect').value;
+            const section = document.getElementById('sectionSelect').value;
+
+            if (!year || !section) {
+                alert("Please select both year and section.");
+                return;
+            }
+
+            const otp = Math.floor(100000 + Math.random() * 900000);
+            document.getElementById('otpDisplay').innerHTML = `Generated OTP: <strong>${otp}</strong>`;
+        }
+
+        // ✅ Logout Function
+        function logout() {
+            localStorage.removeItem('teacherLoggedIn');
+            window.location.href = 'teacher_signin.html';
+        }
+    </script>
+
+</body>
+</html>
