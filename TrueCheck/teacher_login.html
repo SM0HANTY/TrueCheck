@@ -112,8 +112,7 @@
     </div>
 
     <script>
-        // Set the secret teacher PIN (in real app, this would be server-side)
-        const TEACHER_PIN = "123456";
+        const TEACHER_PIN = "AkaAnuSus@123";
         
         document.getElementById('teacherLoginForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -122,12 +121,16 @@
             document.getElementById('pinError').style.display = 'none';
             
             if (pin === TEACHER_PIN) {
-                alert("Login successful! Redirecting to teacher dashboard...");
-                // window.location.href = 'teacher_dashboard.html';
+                // ✅ Store authentication in localStorage
+                localStorage.setItem('teacherLoggedIn', 'true');
+    
+                alert("Login successful! Redirecting to profile...");
+                window.location.href = 'teacher_profile.html'; // Redirect to profile
             } else {
                 document.getElementById('pinError').style.display = 'block';
             }
         });
     </script>
+    
 </body>
 </html>
