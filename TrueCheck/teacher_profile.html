@@ -17,7 +17,7 @@
         }
         .profile-container {
             background: url('logo.jpg') center/cover no-repeat;
-            color: white;
+            color: black;
             font-weight: bold;
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -35,7 +35,7 @@
             font-size: 24px;
             margin-bottom: 20px;
         }
-        select, button {
+        select, input, button {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -44,7 +44,7 @@
             border: 1px solid #ddd;
             box-sizing: border-box;
         }
-        select {
+        select, input {
             background: white;
             color: black;
         }
@@ -58,11 +58,32 @@
         button:hover {
             background-color: #d35400;
         }
-        #otpDisplay {
-            font-size: 20px;
-            font-weight: bold;
-            color: #e74c3c;
-            margin-top: 15px;
+        .input-container {
+            position: relative;
+            width: 100%;
+        }
+        #sectionSuggestions {
+            width: 100%;
+            max-height: 150px;
+            overflow-y: auto;
+            background: white;
+            color: black;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            position: absolute;
+            top: 100%; /* Ensures suggestions appear below */
+            left: 0;
+            z-index: 100;
+            display: none;
+        }
+        .suggestion {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #ddd;
+        }
+        .suggestion:hover {
+            background: #e67e22;
+            color: white;
         }
     </style>
 </head>
@@ -70,30 +91,24 @@
 
     <div class="profile-container">
         <h1>Teacher Profile</h1>
-        <br><br><br><br><br>
+        <br><br><br><br><br><br><br><br><br><br><br>
 
         <label for="yearSelect">Select Year:</label>
-        <select id="yearSelect" onchange="updateSections()" required>
-            <option value="">--Select Year--</option>
+        <select id="yearSelect" required>
+            <option value="">--Year--</option>
             <option value="1st Year">1st Year</option>
             <option value="2nd Year">2nd Year</option>
             <option value="3rd Year">3rd Year</option>
             <option value="4th Year">4th Year</option>
         </select>
 
-        <label for="sectionSelect">Select Section:</label>
-        <select id="sectionSelect" onchange="updateSubjects()" disabled>
-            <option value="">--Select Section--</option>
-        </select>
+        <label for="sectionInput">Enter Section:</label>
+        <div class="input-container">
+            <input type="text" id="sectionInput" oninput="filterSections()" placeholder="--Section--">
+            <div id="sectionSuggestions"></div>
+        </div>
 
-        <label for="subjectSelect">Select Subject:</label>
-        <select id="subjectSelect" disabled>
-            <option value="">--Select Subject--</option>
-        </select>
-
-        <button onclick="generateOTP()">Generate OTP</button>
-        <div id="otpDisplay"></div>
-
+        <button onclick="submitSelection()">Submit</button>
         <button onclick="logout()">Logout</button>
     </div>
 
@@ -102,81 +117,60 @@
             window.location.href = 'teacher_login.html';
         }
 
-        const sectionsData = {
-            "1st Year": ["Section 1", "Section 2", "Section 3", "Section 4"],
-            "2nd Year": ["Section A", "Section B", "Section C"],
-            "3rd Year": ["Alpha", "Beta", "Gamma"],
-            "4th Year": ["X", "Y", "Z"]
-        };
+        function filterSections() {
+            const input = document.getElementById("sectionInput").value;
+            const suggestionsBox = document.getElementById("sectionSuggestions");
 
-        const subjectsData = {
-            "1st Year": ["Math", "Physics", "Chemistry"],
-            "2nd Year": ["Data Structures", "OOP", "DBMS"],
-            "3rd Year": ["Machine Learning", "Operating Systems", "Networks"],
-            "4th Year": ["AI", "Blockchain", "Cybersecurity"]
-        };
+            suggestionsBox.innerHTML = ""; // Clear previous suggestions
 
-        function updateSections() {
-            const year = document.getElementById('yearSelect').value;
-            const sectionSelect = document.getElementById('sectionSelect');
-            const subjectSelect = document.getElementById('subjectSelect');
-
-            sectionSelect.innerHTML = '<option value="">--Select Section--</option>';
-            subjectSelect.innerHTML = '<option value="">--Select Subject--</option>';
-            subjectSelect.disabled = true;
-
-            if (year) {
-                sectionSelect.disabled = false;
-                sectionsData[year].forEach(section => {
-                    let option = document.createElement('option');
-                    option.value = section;
-                    option.textContent = section;
-                    sectionSelect.appendChild(option);
-                });
-            } else {
-                sectionSelect.disabled = true;
-            }
-        }
-
-        function updateSubjects() {
-            const year = document.getElementById('yearSelect').value;
-            const section = document.getElementById('sectionSelect').value;
-            const subjectSelect = document.getElementById('subjectSelect');
-
-            subjectSelect.innerHTML = '<option value="">--Select Subject--</option>';
-            if (year && section) {
-                subjectSelect.disabled = false;
-                subjectsData[year].forEach(subject => {
-                    let option = document.createElement('option');
-                    option.value = subject;
-                    option.textContent = subject;
-                    subjectSelect.appendChild(option);
-                });
-            } else {
-                subjectSelect.disabled = true;
-            }
-        }
-
-        function generateOTP() {
-            const year = document.getElementById('yearSelect').value;
-            const section = document.getElementById('sectionSelect').value;
-            const subject = document.getElementById('subjectSelect').value;
-
-            if (!year || !section || !subject) {
-                alert("Please select Year, Section, and Subject.");
+            if (input === "") {
+                suggestionsBox.style.display = "none";
                 return;
             }
 
-            const otp = Math.floor(100000 + Math.random() * 900000);
-            document.getElementById('otpDisplay').innerHTML = `Generated OTP: <strong>${otp}</strong>`;
+            const suggestions = [];
+            for (let i = 1; i <= 150; i++) { // Adjust range as needed
+                if (i.toString().startsWith(input)) {
+                    suggestions.push(i);
+                }
+            }
+
+            if (suggestions.length > 0) {
+                suggestionsBox.style.display = "block";
+                suggestions.forEach(section => {
+                    let div = document.createElement("div");
+                    div.classList.add("suggestion");
+                    div.textContent = section;
+                    div.onclick = () => {
+                        document.getElementById("sectionInput").value = section;
+                        suggestionsBox.style.display = "none";
+                    };
+                    suggestionsBox.appendChild(div);
+                });
+            } else {
+                suggestionsBox.style.display = "none";
+            }
+        }
+
+        function submitSelection() {
+            const year = document.getElementById("yearSelect").value;
+            const section = document.getElementById("sectionInput").value;
+
+            if (!year || !section) {
+                alert("Please select both Year and Section.");
+                return;
+            }
+
+            window.location.href = `class_data.html?year=${encodeURIComponent(year)}&section=${encodeURIComponent(section)}`;
         }
 
         function logout() {
-            localStorage.removeItem('teacherLoggedIn');
-            window.location.href = 'teacher_login.html';
+            localStorage.removeItem("teacherLoggedIn");
+            window.location.href = "teacher_login.html";
         }
     </script>
 
 </body>
 </html>
+
 
