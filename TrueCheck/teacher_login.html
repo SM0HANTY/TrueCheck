@@ -124,8 +124,6 @@
             if (pin === TEACHER_PIN) {
                 // ✅ Store authentication in localStorage
                 localStorage.setItem('teacherLoggedIn', 'true');
-    
-                alert("Login successful! Redirecting to profile...");
                 window.location.href = 'teacher_profile.html'; // Redirect to profile
             } else {
                 document.getElementById('pinError').style.display = 'block';
