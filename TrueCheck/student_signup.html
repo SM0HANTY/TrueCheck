@@ -76,8 +76,10 @@
             z-index: 10;
         }
         .dropdown-list div {
+            color: black; /* Makes text black */
             padding: 8px;
             cursor: pointer;
+
         }
         .dropdown-list div:hover {
             background: #f1f1f1;
@@ -126,7 +128,6 @@
         <br><br><br>
         <h1>Sign Up</h1>
         <br><br><br><br><br><br><br><br><br><br><br>
-        
         <form id="studentSignupForm">
             <div class="form-group">
                 <label for="studentId">Student ID</label>
@@ -174,10 +175,11 @@
         const sectionInput = document.getElementById("sectionInput");
         const sectionDropdown = document.getElementById("sectionDropdown");
 
-        // Updated Sections with Numbers and Letters
+        // More values added to the dropdown
         const sections = [
-            "1", "10", "11", "12", "13", "100", "101", "102",
+            "1", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "100", "101", "102", "110", "120",
             "2", "20", "21", "22", "23", "200", "201", "202",
+            "3", "30", "31", "32", "300", "301", "302",
             "A", "B", "C", "D", "E", "F"
         ];
 
@@ -218,5 +220,6 @@
     </script>
 </body>
 </html>
+
 
 
