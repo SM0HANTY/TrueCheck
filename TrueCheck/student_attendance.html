@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Attendance</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .attendance-container {
+            background: url("C:\Users\HP\Downloads\logo.jpg") center/cover no-repeat;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            padding: 20px;
+            text-align: center;
+        }
+        button {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .timer {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e74c3c;
+            margin: 15px 0;
+        }
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="attendance-container">
+        <h1>Mark Attendance</h1>
+        <div id="timer" class="timer"></div>
+        <form id="attendanceForm">
+            <label for="otpInput">Enter Attendance OTP:</label>
+            <input type="text" id="otpInput" placeholder="Enter OTP" required>
+            <div id="otpError" class="error-message">Invalid OTP or Timer Expired!</div>
+            <button type="submit">Submit Attendance</button>
+        </form>
+    </div>
+
+    <script>
+        const savedPin = localStorage.getItem('attendancePin'); // OTP from the teacher
+        const timerDeadline = localStorage.getItem('timerDeadline'); // Timer deadline set by the teacher
+
+        // Display the timer
+        const timerElement = document.getElementById('timer');
+        const updateTimer = () => {
+            const remainingTime = timerDeadline - Date.now();
+            if (remainingTime <= 0) {
+                clearInterval(timerInterval);
+                timerElement.textContent = "Time's up!";
+                return;
+            }
+
+            const minutes = Math.floor(remainingTime / (1000 * 60));
+            const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+            timerElement.textContent = `Time Remaining: ${minutes}m ${seconds}s`;
+        };
+        const timerInterval = setInterval(updateTimer, 1000);
+        updateTimer();
+
+        // Handle attendance submission
+        document.getElementById('attendanceForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const enteredPin = document.getElementById('otpInput').value.trim();
+            const currentTime = Date.now();
+
+            // Validate OTP and timer
+            if (enteredPin === savedPin && currentTime <= timerDeadline) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const studentCoords = position.coords;
+
+                    // Dummy teacher location (replace with the actual location)
+                    const teacherCoords = { latitude: 20.5937, longitude: 78.9629 };
+
+                    const distance = calculateDistance(
+                        studentCoords.latitude,
+                        studentCoords.longitude,
+                        teacherCoords.latitude,
+                        teacherCoords.longitude
+                    );
+
+                    if (distance <= 100) {
+                        localStorage.setItem('attendanceStatus', 'Present');
+                        alert("Attendance marked successfully!");
+                    } else {
+                        alert("Location mismatch. Attendance not marked.");
+                    }
+                });
+            } else {
+                document.getElementById('otpError').style.display = 'block';
+            }
+        });
+
+        // Calculate geolocation distance using Haversine formula
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Earth's radius in kilometers
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) ** 2 + 
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon / 2) ** 2;
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c * 1000; // Convert to meters
+        }
+    </script>
+</body>
+
+
+
+</html>

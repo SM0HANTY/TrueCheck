@@ -16,62 +16,34 @@
             height: 100vh;
         }
         .login-container {
-            background: url('logo.jpg') center/cover no-repeat;
-            color: white;
-            font-weight: bold;
+            color: black;
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             width: 400px;
-            height: 500px;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            padding: 20px;
             text-align: center;
-            position: relative;
-        }
-        h1 {
-            color: #3498db;
-            font-size: 24px;
-            margin-bottom: 180px;
-            text-align: center;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
-        input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-        input:focus {
-            border-color: #3498db;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
         }
         button {
+            margin: 10px 0;
+            padding: 10px;
             background-color: #3498db;
             color: white;
             border: none;
-            padding: 12px 20px;
             border-radius: 5px;
             font-size: 16px;
             cursor: pointer;
-            width: 100%;
-            font-weight: 600;
             transition: background-color 0.3s;
         }
         button:hover {
             background-color: #2980b9;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
         }
         .error-message {
             color: #e74c3c;
@@ -80,62 +52,56 @@
             display: none;
         }
         .signup-link {
-            margin-top: 25px;
-            text-align: center;
+            margin-top: 20px;
             font-size: 14px;
             color: #777;
         }
         .signup-link a {
             color: #3498db;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
         <h1>Student Login</h1>
-        
-        <form id="studentLoginForm">
-            <div class="form-group">
-                <label for="studentId">Student ID</label>
-                <input type="text" id="studentId" placeholder="Enter your student ID" required>
-                <div id="idError" class="error-message">Please enter student ID</div>
-            </div>
-            
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Enter your password" required>
-                <div id="passwordError" class="error-message">Invalid credentials</div>
-            </div>
-            
+        <form id="loginForm">
+            <label for="studentId">Student ID</label>
+            <input type="text" id="studentId" placeholder="Enter Student ID" required>
+            <div id="idError" class="error-message">Invalid Student ID</div>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter Password" required>
+            <div id="passwordError" class="error-message">Invalid Password</div>
+
             <button type="submit">Login</button>
         </form>
-        
         <div class="signup-link">
             New student? <a href="student_signup.html">Sign up here</a>
         </div>
     </div>
 
     <script>
-        document.getElementById('studentLoginForm').addEventListener('submit', function(e) {
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
             e.preventDefault();
             
             const studentId = document.getElementById('studentId').value.trim();
             const password = document.getElementById('password').value.trim();
-            
+
             // Reset errors
             document.getElementById('idError').style.display = 'none';
             document.getElementById('passwordError').style.display = 'none';
-            
-            // Get stored student data
+
+            // Authenticate
             const students = JSON.parse(localStorage.getItem('students')) || [];
             const student = students.find(s => s.id === studentId && s.password === password);
-            
+
             if (student) {
-                alert("Login successful! Redirecting to student dashboard...");
-                // window.location.href = 'student_dashboard.html';
+                // Redirect to attendance page
+                window.location.href = 'student_attendance.html';
             } else {
+                document.getElementById('idError').style.display = 'block';
                 document.getElementById('passwordError').style.display = 'block';
             }
         });

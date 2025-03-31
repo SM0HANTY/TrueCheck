@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Success</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .success-container {
+            background: url("C:\Users\HP\Downloads\logo.jpg") center/cover no-repeat;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            color: #2ecc71;
+            margin: 20px 0;
+        }
+        p {
+            font-size: 16px;
+            color: #333;
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <h1>Attendance Marked Successfully!</h1>
+        <p>Your attendance has been recorded. Thank you for marking your presence.</p>
+        <button onclick="redirectToIndex()">Back to Home</button>
+    </div>
+
+    <script>
+        function redirectToIndex() {
+            window.location.href = 'index.html'; // Redirect to the index page
+        }
+    </script>
+</body>
+</html>
