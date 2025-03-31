@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Signup</title>
+    <title>Sign Up</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -22,7 +22,7 @@
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             width: 400px;
-            height: 500px;
+            height: 600px;
             padding: 40px;
             display: flex;
             flex-direction: column;
@@ -33,30 +33,33 @@
         h1 {
             color: #3498db;
             font-size: 24px;
-            margin-bottom: 180px;
-            text-align: center;
+            margin-bottom: 20px;
         }
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            width: 100%;
+            text-align: left;
         }
         label {
             display: block;
-            margin-bottom: 8px;
             font-weight: 600;
             color: #555;
         }
-        input {
+        select, input {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 16px;
             box-sizing: border-box;
         }
-        input:focus {
-            border-color: #3498db;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .form-row .form-group {
+            width: 48%;
         }
         button {
             background-color: #3498db;
@@ -86,8 +89,7 @@
             display: none;
         }
         .login-link {
-            margin-top: 20px;
-            text-align: center;
+            margin-top: 10px;
             font-size: 14px;
             color: #777;
         }
@@ -100,7 +102,9 @@
 </head>
 <body>
     <div class="signup-container">
-        <h1>Student Registration</h1>
+        <br><br><br>
+        <h1>Sign Up</h1>
+        <br><br><br><br><br><br><br><br><br><br><br>
         
         <form id="studentSignupForm">
             <div class="form-group">
@@ -108,13 +112,33 @@
                 <input type="text" id="studentId" placeholder="Enter your student ID" required>
                 <div id="idError" class="error-message">Please enter student ID</div>
             </div>
-            
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="yearSelect">Select Year</label>
+                    <select id="yearSelect" required>
+                        <option value="">--Year--</option>
+                        <option value="1st Year">1st Year</option>
+                        <option value="2nd Year">2nd Year</option>
+                        <option value="3rd Year">3rd Year</option>
+                        <option value="4th Year">4th Year</option>
+                    </select>
+                    <div id="yearError" class="error-message">Please select a year</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="sectionInput">Enter Section</label>
+                    <input type="text" id="sectionInput" placeholder="Enter your section">
+                    <div id="sectionError" class="error-message">Please enter a section</div>
+                </div>
+            </div>
+
             <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Create password" required>
+                <label for="password">Create Password</label>
+                <input type="password" id="password" placeholder="Enter password" required>
                 <div id="passwordError" class="error-message">Password must be at least 6 characters</div>
             </div>
-            
+
             <button type="submit">Register</button>
             <div id="successMessage" class="success-message"></div>
         </form>
@@ -129,47 +153,61 @@
             e.preventDefault();
             
             const studentId = document.getElementById('studentId').value.trim();
-            const password = document.getElementById('password').value.trim();
-            
+            const year = document.getElementById("yearSelect").value;
+            const section = document.getElementById("sectionInput").value.trim();
+            const password = document.getElementById("password").value.trim();
+
             // Reset errors
             document.getElementById('idError').style.display = 'none';
+            document.getElementById('yearError').style.display = 'none';
+            document.getElementById('sectionError').style.display = 'none';
             document.getElementById('passwordError').style.display = 'none';
             document.getElementById('successMessage').style.display = 'none';
 
             let isValid = true;
 
-            // Retrieve stored students from localStorage
             const students = JSON.parse(localStorage.getItem('students')) || [];
+            const classData = JSON.parse(localStorage.getItem('class_data')) || [];
 
-            // Check if the student is already registered
-            const existingStudent = students.find(s => s.id === studentId);
-            if (existingStudent) {
+            // Check if Student ID is already registered
+            if (students.find(s => s.id === studentId)) {
                 document.getElementById('idError').textContent = "This Student ID is already registered.";
                 document.getElementById('idError').style.display = 'block';
                 return;
             }
 
-            // Validation
             if (!studentId) {
-                document.getElementById('idError').textContent = "Please enter student ID";
                 document.getElementById('idError').style.display = 'block';
                 isValid = false;
             }
-            
+
+            if (!year) {
+                document.getElementById('yearError').style.display = 'block';
+                isValid = false;
+            }
+
+            if (!section) {
+                document.getElementById('sectionError').style.display = 'block';
+                isValid = false;
+            }
+
             if (!password || password.length < 6) {
                 document.getElementById('passwordError').style.display = 'block';
                 isValid = false;
             }
 
             if (isValid) {
-                // Save new student data
+                // Save student login data (Only Student can access)
                 students.push({ id: studentId, password: password });
                 localStorage.setItem('students', JSON.stringify(students));
 
-                // Show success message and redirect
-                document.getElementById('successMessage').textContent = 'Registration successful! Redirecting...';
+                // Save student class data (Teacher can access)
+                classData.push({ id: studentId, year: year, section: section });
+                localStorage.setItem('class_data', JSON.stringify(classData));
+
+                document.getElementById('successMessage').textContent = 'Registration successful!';
                 document.getElementById('successMessage').style.display = 'block';
-                
+
                 setTimeout(() => {
                     window.location.href = 'student_login.html';
                 }, 1500);
@@ -178,3 +216,4 @@
     </script>
 </body>
 </html>
+
