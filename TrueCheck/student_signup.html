@@ -40,6 +40,14 @@
             width: 100%;
             text-align: left;
         }
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .form-row .form-group {
+            width: 48%;
+        }
         label {
             display: block;
             font-weight: 600;
@@ -53,13 +61,26 @@
             font-size: 16px;
             box-sizing: border-box;
         }
-        .form-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
+        .dropdown-container {
+            position: relative;
         }
-        .form-row .form-group {
-            width: 48%;
+        .dropdown-list {
+            position: absolute;
+            width: 100%;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            max-height: 150px;
+            overflow-y: auto;
+            display: none;
+            z-index: 10;
+        }
+        .dropdown-list div {
+            padding: 8px;
+            cursor: pointer;
+        }
+        .dropdown-list div:hover {
+            background: #f1f1f1;
         }
         button {
             background-color: #3498db;
@@ -126,9 +147,10 @@
                     <div id="yearError" class="error-message">Please select a year</div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group dropdown-container">
                     <label for="sectionInput">Enter Section</label>
-                    <input type="text" id="sectionInput" placeholder="Enter your section">
+                    <input type="text" id="sectionInput" placeholder="Enter or select section">
+                    <div class="dropdown-list" id="sectionDropdown"></div>
                     <div id="sectionError" class="error-message">Please enter a section</div>
                 </div>
             </div>
@@ -149,71 +171,52 @@
     </div>
 
     <script>
-        document.getElementById('studentSignupForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const studentId = document.getElementById('studentId').value.trim();
-            const year = document.getElementById("yearSelect").value;
-            const section = document.getElementById("sectionInput").value.trim();
-            const password = document.getElementById("password").value.trim();
+        const sectionInput = document.getElementById("sectionInput");
+        const sectionDropdown = document.getElementById("sectionDropdown");
 
-            // Reset errors
-            document.getElementById('idError').style.display = 'none';
-            document.getElementById('yearError').style.display = 'none';
-            document.getElementById('sectionError').style.display = 'none';
-            document.getElementById('passwordError').style.display = 'none';
-            document.getElementById('successMessage').style.display = 'none';
+        // Updated Sections with Numbers and Letters
+        const sections = [
+            "1", "10", "11", "12", "13", "100", "101", "102",
+            "2", "20", "21", "22", "23", "200", "201", "202",
+            "A", "B", "C", "D", "E", "F"
+        ];
 
-            let isValid = true;
+        function filterSections(query) {
+            sectionDropdown.innerHTML = "";
+            const filteredSections = sections.filter(section => section.startsWith(query));
 
-            const students = JSON.parse(localStorage.getItem('students')) || [];
-            const classData = JSON.parse(localStorage.getItem('class_data')) || [];
-
-            // Check if Student ID is already registered
-            if (students.find(s => s.id === studentId)) {
-                document.getElementById('idError').textContent = "This Student ID is already registered.";
-                document.getElementById('idError').style.display = 'block';
+            if (filteredSections.length === 0) {
+                sectionDropdown.style.display = "none";
                 return;
             }
 
-            if (!studentId) {
-                document.getElementById('idError').style.display = 'block';
-                isValid = false;
-            }
+            filteredSections.forEach(section => {
+                const div = document.createElement("div");
+                div.textContent = section;
+                div.addEventListener("click", () => {
+                    sectionInput.value = section;
+                    sectionDropdown.style.display = "none";
+                });
+                sectionDropdown.appendChild(div);
+            });
+            sectionDropdown.style.display = "block";
+        }
 
-            if (!year) {
-                document.getElementById('yearError').style.display = 'block';
-                isValid = false;
-            }
+        sectionInput.addEventListener("focus", () => {
+            filterSections("");
+        });
 
-            if (!section) {
-                document.getElementById('sectionError').style.display = 'block';
-                isValid = false;
-            }
+        sectionInput.addEventListener("input", (e) => {
+            filterSections(e.target.value);
+        });
 
-            if (!password || password.length < 6) {
-                document.getElementById('passwordError').style.display = 'block';
-                isValid = false;
-            }
-
-            if (isValid) {
-                // Save student login data (Only Student can access)
-                students.push({ id: studentId, password: password });
-                localStorage.setItem('students', JSON.stringify(students));
-
-                // Save student class data (Teacher can access)
-                classData.push({ id: studentId, year: year, section: section });
-                localStorage.setItem('class_data', JSON.stringify(classData));
-
-                document.getElementById('successMessage').textContent = 'Registration successful!';
-                document.getElementById('successMessage').style.display = 'block';
-
-                setTimeout(() => {
-                    window.location.href = 'student_login.html';
-                }, 1500);
+        document.addEventListener("click", (e) => {
+            if (!sectionInput.contains(e.target) && !sectionDropdown.contains(e.target)) {
+                sectionDropdown.style.display = "none";
             }
         });
     </script>
 </body>
 </html>
+
 
